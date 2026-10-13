@@ -75,6 +75,26 @@ function doGet(e) {
   return json_({ ok: true, rows: rows });
 }
 
+/**
+ * Ejecútala una sola vez desde el editor (menú de funciones > crearHoja > Ejecutar).
+ * Crea una hoja de Google Sheets nueva en tu Drive, guarda su ID en SHEET_ID
+ * y muestra el enlace en el registro de ejecución.
+ */
+function crearHoja() {
+  const ss = SpreadsheetApp.create('LogiRed – Encuesta tiendas');
+  PropertiesService.getScriptProperties().setProperty('SHEET_ID', ss.getId());
+  getSheet_(); // crea la pestaña Respuestas con sus encabezados
+  const vacia = ss.getSheetByName('Hoja 1') || ss.getSheetByName('Sheet1');
+  if (vacia && ss.getSheets().length > 1) ss.deleteSheet(vacia);
+  Logger.log('Hoja creada: ' + ss.getUrl());
+}
+
+/** Ejecútala desde el editor para comprobar que la hoja configurada se puede abrir. */
+function probarHoja() {
+  const sheet = getSheet_();
+  Logger.log('OK: "' + sheet.getParent().getName() + '" → ' + sheet.getParent().getUrl());
+}
+
 function getSpreadsheet_() {
   // Si el script se creó desde script.google.com (no desde la hoja), no hay hoja activa:
   // se usa la propiedad SHEET_ID con el ID que aparece en la URL de la hoja.

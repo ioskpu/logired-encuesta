@@ -30,7 +30,8 @@ Hoja de Google Sheets, pestaña "Respuestas"
 4. Ve a **Configuración del proyecto** (ícono de engranaje) → **Propiedades de la secuencia de comandos** → **Añadir propiedad**:
    - Propiedad: `SECRET`
    - Valor: una clave larga y aleatoria. Puedes generar una con `openssl rand -hex 24`.
-   - Si creaste el script desde script.google.com en lugar de desde la hoja, añade también `SHEET_ID` con el ID de la hoja: lo que va entre `/d/` y `/edit` en su URL. Sin esto aparece el error `Cannot read properties of null (reading 'getSheetByName')`.
+   - Si creaste el script desde script.google.com en lugar de desde la hoja, en el editor elige la función **crearHoja** en el menú de arriba y pulsa **Ejecutar**. Crea la hoja en tu Drive y guarda su ID en `SHEET_ID` por ti; el enlace aparece en el registro de ejecución. Sin esto aparece el error `Cannot read properties of null (reading 'getSheetByName')`.
+   - Si prefieres usar una hoja que ya tienes, pon su ID en `SHEET_ID` (lo que va entre `/d/` y `/edit` en su URL). Debe ser una hoja de Google Sheets, no un Excel subido (`.xlsx`), y de la misma cuenta que el script; si no, aparece `Illegal spreadsheet id or key`. Ejecuta **probarHoja** para comprobarlo.
 5. Pulsa **Implementar → Nueva implementación**:
    - Tipo: **Aplicación web**
    - Ejecutar como: **Yo**
