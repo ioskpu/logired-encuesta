@@ -30,6 +30,7 @@ Hoja de Google Sheets, pestaña "Respuestas"
 4. Ve a **Configuración del proyecto** (ícono de engranaje) → **Propiedades de la secuencia de comandos** → **Añadir propiedad**:
    - Propiedad: `SECRET`
    - Valor: una clave larga y aleatoria. Puedes generar una con `openssl rand -hex 24`.
+   - Si creaste el script desde script.google.com en lugar de desde la hoja, añade también `SHEET_ID` con el ID de la hoja: lo que va entre `/d/` y `/edit` en su URL. Sin esto aparece el error `Cannot read properties of null (reading 'getSheetByName')`.
 5. Pulsa **Implementar → Nueva implementación**:
    - Tipo: **Aplicación web**
    - Ejecutar como: **Yo**

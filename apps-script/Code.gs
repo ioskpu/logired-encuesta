@@ -4,7 +4,9 @@
  *
  * Configuración (ver README):
  *   Configuración del proyecto > Propiedades de la secuencia de comandos
- *   SECRET = la misma clave que pongas en Vercel como APPS_SCRIPT_SECRET
+ *   SECRET   = la misma clave que pongas en Vercel como APPS_SCRIPT_SECRET
+ *   SHEET_ID = (solo si el script NO se creó desde la hoja) el ID de la hoja,
+ *              lo que va entre /d/ y /edit en su URL
  */
 
 const SHEET_NAME = 'Respuestas';
@@ -73,8 +75,18 @@ function doGet(e) {
   return json_({ ok: true, rows: rows });
 }
 
-function getSheet_() {
+function getSpreadsheet_() {
+  // Si el script se creó desde script.google.com (no desde la hoja), no hay hoja activa:
+  // se usa la propiedad SHEET_ID con el ID que aparece en la URL de la hoja.
+  const id = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
+  if (id) return SpreadsheetApp.openById(id.trim());
   const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error('Falta la propiedad SHEET_ID: el script no está vinculado a una hoja.');
+  return ss;
+}
+
+function getSheet_() {
+  const ss = getSpreadsheet_();
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
