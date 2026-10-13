@@ -48,7 +48,17 @@ async function callScript(method, payload) {
   }
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch { throw Object.assign(new Error('bad_script_response'), { status: 502 }); }
+  try { data = JSON.parse(text); } catch {
+    // Google respondió con HTML: muestra el inicio para saber por qué (login, permisos, error del script).
+    const title = (text.match(/<title>([^<]*)<\/title>/i) || [])[1] || '';
+    console.error('Respuesta no JSON de Apps Script', {
+      status: res.status,
+      urlFinal: res.url.split('?')[0],
+      titulo: title.trim(),
+      inicio: text.replace(/\s+/g, ' ').slice(0, 300)
+    });
+    throw Object.assign(new Error('bad_script_response'), { status: 502 });
+  }
   if (!data.ok) throw Object.assign(new Error(data.error || 'script_error'), { status: data.error === 'unauthorized' ? 500 : 502 });
   return data;
 }
