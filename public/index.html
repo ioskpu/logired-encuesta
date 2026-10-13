@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f6b52">
+<title>Encuesta tiendas Puerto Ayacucho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Una columna estrecha para teléfono; pestañas arriba (Registrar / Resultados); preguntas como tarjetas con opciones grandes */
+:root{
+  --bg:#f3f6f4; --surface:#ffffff; --fg:#14231d; --muted:#5b6d65; --line:#d6e0db;
+  --accent:#1f6b52; --accent-fg:#ffffff; --accent-soft:#dcefe6; --amber:#b86e00; --amber-soft:#fbecd2;
+  --danger:#b3261e;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e1714; --surface:#16221d; --fg:#e4eee9; --muted:#9db1a8; --line:#2a3a33;
+  --accent:#5cc79d; --accent-fg:#0b1612; --accent-soft:#1d3a2f; --amber:#f0b14a; --amber-soft:#3a2c14; --danger:#ff8a80; color-scheme:dark}}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,6vw,34px);line-height:1.1;margin:0;text-wrap:balance}
+.lead{color:var(--muted);margin:0;max-width:60ch}
+.tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;padding:10px;border-radius:9px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-fg)}
+.tab:focus-visible,.opt input:focus-visible+span,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:14px}
+form{display:flex;flex-direction:column;gap:12px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;margin:0;min-width:0}
+.q legend,.q label.qt{font-weight:700;padding:0;float:left;width:100%}
+.q legend+*{clear:both}
+.num{color:var(--accent);font-family:var(--display);margin-right:6px}
+.hint{font-size:13px;color:var(--muted);margin:-4px 0 0}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt span{display:block;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--bg);font-size:15px;cursor:pointer}
+.opt input:checked+span{background:var(--accent-soft);border-color:var(--accent);color:var(--fg);font-weight:700}
+input[type=text],input[type=number],input[type=tel],input[type=password],textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:80px;resize:vertical}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-weight:700;border-radius:10px;padding:12px 18px;cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-fg)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.small{padding:8px 12px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.status{font-size:14px;color:var(--muted);min-height:1.5em}
+.status.ok{color:var(--accent);font-weight:700}.status.err{color:var(--danger);font-weight:700}
+.notice{background:var(--amber-soft);border-radius:10px;padding:12px 14px;font-size:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--display);font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.dist{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.dist h3{margin:0;font-size:15px}
+.bar{display:grid;grid-template-columns:minmax(0,9.5em) 1fr 2.5em;gap:8px;align-items:center;font-size:14px}
+.bar .track{height:12px;background:var(--bg);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;background:var(--accent)}
+.bar .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.row div{min-width:0;overflow-wrap:anywhere}
+.row small{color:var(--muted);display:block}
+.del{font:inherit;font-size:13px;background:none;border:0;color:var(--danger);cursor:pointer;padding:4px;flex-shrink:0}
+.empty{color:var(--muted);text-align:center;padding:28px 12px;background:var(--surface);border:1px dashed var(--line);border-radius:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+h2{font-family:var(--display);font-size:20px;margin:6px 0 0}
+@media (prefers-reduced-motion:no-preference){.fill{transition:width .4s ease}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Validación · Casco urbano de Puerto Ayacucho</div>
+    <h1>¿Cómo compran las tiendas?</h1>
+    <p class="lead">Llénala tú mientras conversas con el dueño de cada tienda, en persona o por teléfono. Son 16 preguntas cortas, unos 5 minutos. Funciona sin señal: lo guardado se envía cuando vuelve la conexión.</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-form" aria-selected="true" aria-controls="panel-form">Registrar tienda</button>
+    <button class="tab" role="tab" id="tab-res" aria-selected="false" aria-controls="panel-res">Resultados</button>
+  </div>
+
+  <section id="panel-form" class="panel" role="tabpanel" aria-labelledby="tab-form">
+    <div class="notice" id="pending" hidden>
+      <span id="pending-text"></span>
+      <button class="btn small ghost" id="flush" type="button">Enviar ahora</button>
+    </div>
+    <form id="f" novalidate></form>
+    <div class="actions">
+      <button class="btn" id="save" type="button">Guardar respuesta</button>
+      <button class="btn ghost" id="copy" type="button">Copiar preguntas para WhatsApp</button>
+    </div>
+    <div class="status" id="status" role="status"></div>
+    <textarea id="copy-fallback" hidden readonly aria-label="Preguntas para copiar"></textarea>
+  </section>
+
+  <section id="panel-res" class="panel" role="tabpanel" aria-labelledby="tab-res" hidden>
+    <div class="card" id="login">
+      <label for="clave"><b>Clave de resultados</b></label>
+      <p class="hint" style="margin:0">Los resultados incluyen teléfonos de las tiendas, por eso están protegidos.</p>
+      <input type="password" id="clave" autocomplete="current-password">
+      <div class="actions"><button class="btn" id="enter" type="button">Ver resultados</button></div>
+      <div class="status" id="login-status" role="status"></div>
+    </div>
+    <div id="res-wrap" class="panel" hidden>
+      <div class="actions">
+        <button class="btn small ghost" id="refresh" type="button">Actualizar</button>
+        <button class="btn small ghost" id="logout" type="button">Cerrar sesión</button>
+      </div>
+      <div id="res" class="panel"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const API = "/api/respuestas";
+const Q = [
+  {id:"tienda", t:"Nombre de la tienda o del dueño", type:"text", hint:"Opcional. Sirve para no repetir tiendas."},
+  {id:"sector", t:"Sector o barrio", type:"text"},
+  {id:"tipo", t:"Tipo de comercio", type:"radio", o:["Bodega","Abasto","Minimercado","Otro"]},
+  {id:"proveedores", t:"¿A cuántos proveedores le compra?", type:"radio", o:["1 a 3","4 a 6","7 a 10","Más de 10"]},
+  {id:"como", t:"¿Cómo compra la mayoría de su mercancía?", type:"radio", o:["Va al proveedor","El proveedor lo visita","WhatsApp o llamada","Una mezcla"]},
+  {id:"viajes", t:"¿Cuántas veces por semana sale a comprar?", type:"number", unit:"viajes por semana"},
+  {id:"gasto", t:"¿Cuánto gasta en transporte por cada viaje de compras?", type:"number", unit:"USD aprox.", hint:"Si paga en Bs o pesos, conviértelo a USD aproximado."},
+  {id:"sinproducto", t:"En el último mes, ¿cuántas veces volvió sin un producto que fue a buscar?", type:"radio", o:["Nunca","1 o 2","3 a 5","Más de 5"]},
+  {id:"agotado", t:"En el último mes, ¿cuántas veces se quedó sin un producto clave en la tienda?", type:"radio", o:["Nunca","1 o 2","3 a 5","Más de 5"]},
+  {id:"papeles", t:"¿Le dan factura o nota de entrega cuando compra?", type:"radio", o:["Casi siempre","A veces","Casi nunca"]},
+  {id:"pagos", t:"¿Cómo les paga a sus proveedores?", type:"check", o:["Efectivo USD","Efectivo Bs","Pesos","Pago móvil","Transferencia","Crédito"], hint:"Marque todas las que use."},
+  {id:"consultaria", t:"Si antes de salir pudiera ver qué proveedor tiene un producto y a qué precio, ¿lo consultaría?", type:"radio", o:["Seguro que sí","Quizás","No"]},
+  {id:"entrega", t:"¿Le interesaría que un servicio le traiga pedidos de varios proveedores en un solo viaje compartido?", type:"radio", o:["Sí","Depende del precio","No"]},
+  {id:"piloto", t:"¿Participaría en una prueba gratuita de 2 o 3 semanas?", type:"radio", o:["Sí","No"]},
+  {id:"telefono", t:"Teléfono de contacto para la prueba", type:"tel", hint:"Solo si aceptó participar."},
+  {id:"comentario", t:"Su mayor problema al comprar, en sus palabras", type:"textarea"}
+];
+const OPTIONAL = ["tienda","sector","telefono","comentario"];
+
+/* ---------- Almacenamiento local seguro ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+let memQueue = []; // respaldo si localStorage no está disponible
+function getQueue(){ return store.get("logired_cola", null) ?? memQueue; }
+function setQueue(q){ memQueue = q; store.set("logired_cola", q); }
+
+/* ---------- Construir el formulario ---------- */
+const form = document.getElementById("f");
+Q.forEach((q, idx) => {
+  const isGroup = q.type === "radio" || q.type === "check";
+  const box = document.createElement(isGroup ? "fieldset" : "div");
+  box.className = "q";
+  const title = document.createElement(isGroup ? "legend" : "label");
+  if (!isGroup){ title.className = "qt"; title.htmlFor = "q-" + q.id; }
+  const num = document.createElement("span"); num.className = "num"; num.textContent = idx + 1;
+  title.append(num, document.createTextNode(q.t));
+  box.appendChild(title);
+  if (q.hint){ const h = document.createElement("p"); h.className = "hint"; h.textContent = q.hint; box.appendChild(h); }
+  if (isGroup){
+    const opts = document.createElement("div"); opts.className = "opts";
+    q.o.forEach((o, i) => {
+      const l = document.createElement("label"); l.className = "opt";
+      const inp = document.createElement("input");
+      inp.type = q.type === "radio" ? "radio" : "checkbox"; inp.name = q.id; inp.value = o; inp.id = "q-" + q.id + "-" + i;
+      const s = document.createElement("span"); s.textContent = o;
+      l.append(inp, s); opts.appendChild(l);
+    });
+    box.appendChild(opts);
+  } else if (q.type === "textarea"){
+    const t = document.createElement("textarea"); t.id = "q-" + q.id; t.name = q.id; box.appendChild(t);
+  } else {
+    const i = document.createElement("input"); i.id = "q-" + q.id; i.name = q.id; i.type = q.type;
+    if (q.type === "number"){ i.min = "0"; i.step = "any"; i.inputMode = "decimal"; i.placeholder = q.unit || ""; }
+    if (q.type === "tel") i.inputMode = "tel";
+    box.appendChild(i);
+  }
+  form.appendChild(box);
+});
+
+function readForm(){
+  const r = {};
+  for (const q of Q){
+    if (q.type === "radio"){ const c = form.querySelector('input[name="'+q.id+'"]:checked'); r[q.id] = c ? c.value : ""; }
+    else if (q.type === "check"){ r[q.id] = [...form.querySelectorAll('input[name="'+q.id+'"]:checked')].map(x => x.value); }
+    else if (q.type === "number"){ const v = form.elements[q.id].value.trim().replace(",", "."); r[q.id] = v === "" ? null : Number(v); }
+    else r[q.id] = form.elements[q.id].value.trim();
+  }
+  return r;
+}
+function newId(){
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+}
+
+const statusEl = document.getElementById("status");
+function setStatus(msg, cls){ statusEl.textContent = msg; statusEl.className = "status " + (cls || ""); }
+
+/* ---------- Pestañas ---------- */
+const tabs = {form: document.getElementById("tab-form"), res: document.getElementById("tab-res")};
+const panels = {form: document.getElementById("panel-form"), res: document.getElementById("panel-res")};
+function show(k){
+  for (const x in tabs){ tabs[x].setAttribute("aria-selected", x === k); panels[x].hidden = x !== k; }
+  if (k === "res" && clave) loadResults();
+}
+tabs.form.onclick = () => show("form");
+tabs.res.onclick = () => show("res");
+
+/* ---------- Copiar para WhatsApp ---------- */
+document.getElementById("copy").onclick = async () => {
+  let txt = "Hola, estamos estudiando cómo compran las tiendas de Puerto Ayacucho. ¿Nos ayuda con estas preguntas?\n\n";
+  Q.filter(q => q.id !== "telefono").forEach((q, i) => { txt += (i+1) + ". " + q.t + (q.o ? " (" + q.o.join(" / ") + ")" : "") + "\n"; });
+  try { await navigator.clipboard.writeText(txt); setStatus("Preguntas copiadas. Pégalas en WhatsApp.", "ok"); }
+  catch(e){ const ta = document.getElementById("copy-fallback"); ta.hidden = false; ta.value = txt; ta.style.minHeight = "220px"; ta.focus(); ta.select(); setStatus("Selecciona el texto de abajo y cópialo."); }
+};
+
+/* ---------- Guardar y enviar (con cola sin conexión) ---------- */
+const pendingBox = document.getElementById("pending"), pendingText = document.getElementById("pending-text");
+function renderPending(){
+  const n = getQueue().length;
+  pendingBox.hidden = n === 0;
+  pendingText.textContent = n === 1 ? "1 respuesta guardada en este teléfono, pendiente de envío." : n + " respuestas guardadas en este teléfono, pendientes de envío.";
+}
+
+let flushing = false;
+async function flush(){
+  if (flushing) return { sent: 0, failed: 0 };
+  flushing = true;
+  let sent = 0, failed = 0;
+  try {
+    for (const r of [...getQueue()]){
+      try {
+        const res = await fetch(API, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(r) });
+        if (res.ok){ setQueue(getQueue().filter(x => x.id !== r.id)); sent++; }
+        else if (res.status === 400){ setQueue(getQueue().filter(x => x.id !== r.id)); failed++; } // dato inválido: no reintentar
+        else { failed++; break; }
+      } catch(e){ failed++; break; } // sin conexión
+    }
+  } finally { flushing = false; renderPending(); }
+  return { sent, failed };
+}
+
+const saveBtn = document.getElementById("save");
+saveBtn.onclick = async () => {
+  const r = readForm();
+  const answered = Q.filter(q => !OPTIONAL.includes(q.id)).filter(q => { const v = r[q.id]; return Array.isArray(v) ? v.length : v !== "" && v !== null; }).length;
+  if (answered < 3){ setStatus("Responde al menos 3 preguntas antes de guardar.", "err"); return; }
+  r.id = newId(); r.creado = new Date().toISOString();
+  setQueue([...getQueue(), r]);
+  form.reset(); window.scrollTo({top: 0, behavior: "smooth"});
+  saveBtn.disabled = true; setStatus("Enviando…");
+  const { failed } = await flush();
+  saveBtn.disabled = false;
+  if (getQueue().some(x => x.id === r.id)) setStatus("Guardada en el teléfono. Se enviará cuando haya conexión.", "ok");
+  else setStatus(failed ? "Guardada y enviada. Algunas pendientes no se pudieron enviar." : "Guardada y enviada. Puedes registrar la siguiente tienda.", "ok");
+};
+document.getElementById("flush").onclick = async () => {
+  setStatus("Enviando pendientes…");
+  const { sent } = await flush();
+  setStatus(getQueue().length ? "Sin conexión por ahora. Se reintentará solo." : (sent ? "Pendientes enviadas." : ""), getQueue().length ? "err" : "ok");
+};
+window.addEventListener("online", flush);
+setInterval(() => { if (getQueue().length && navigator.onLine !== false) flush(); }, 60000);
+renderPending();
+flush();
+
+/* ---------- Resultados ---------- */
+let clave = store.get("logired_clave", "");
+let rows = [];
+const login = document.getElementById("login"), resWrap = document.getElementById("res-wrap"), res = document.getElementById("res");
+const loginStatus = document.getElementById("login-status");
+
+function setLogged(on){ login.hidden = on; resWrap.hidden = !on; }
+setLogged(!!clave);
+
+document.getElementById("enter").onclick = () => {
+  const v = document.getElementById("clave").value.trim();
+  if (!v){ loginStatus.textContent = "Escribe la clave."; loginStatus.className = "status err"; return; }
+  clave = v; loadResults(true);
+};
+document.getElementById("clave").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("enter").click(); });
+document.getElementById("logout").onclick = () => { clave = ""; store.del("logired_clave"); rows = []; setLogged(false); };
+document.getElementById("refresh").onclick = () => loadResults();
+
+async function loadResults(fromLogin){
+  if (!fromLogin) { res.innerHTML = ""; const p = document.createElement("p"); p.className = "status"; p.textContent = "Cargando…"; res.appendChild(p); }
+  try {
+    const r = await fetch(API, { headers: { "x-clave": clave } });
+    if (r.status === 401){
+      clave = ""; store.del("logired_clave"); setLogged(false);
+      loginStatus.textContent = "Clave incorrecta."; loginStatus.className = "status err"; return;
+    }
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error);
+    store.set("logired_clave", clave);
+    loginStatus.textContent = "";
+    rows = data.rows; setLogged(true); render();
+  } catch(e){
+    if (fromLogin){ loginStatus.textContent = "No se pudo conectar. Revisa la señal e inténtalo otra vez."; loginStatus.className = "status err"; }
+    else { res.innerHTML = '<div class="notice">No se pudieron cargar los resultados. Revisa la conexión y toca Actualizar.</div>'; }
+  }
+}
+
+function pct(a, b){ return b ? Math.round(a * 100 / b) : 0; }
+function avg(arr){ const v = arr.filter(x => typeof x === "number" && !isNaN(x)); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; }
+function fmt(x, d){ return x === null ? "–" : x.toLocaleString("es-VE", {maximumFractionDigits: d}); }
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+
+function distBlock(title, id){
+  const q = Q.find(x => x.id === id); const counts = {}; q.o.forEach(o => counts[o] = 0); let tot = 0;
+  rows.forEach(r => { const v = r[id]; if (Array.isArray(v)){ if (v.length) tot++; v.forEach(x => { if (x in counts) counts[x]++; }); } else if (v in counts){ counts[v]++; tot++; } });
+  const d = el("div", "dist"); d.appendChild(el("h3", "", title));
+  q.o.forEach(o => {
+    const b = el("div", "bar");
+    const tr = el("div", "track"); const f = el("div", "fill"); f.style.width = pct(counts[o], tot) + "%"; tr.appendChild(f);
+    b.append(el("span", "", o), tr, el("span", "n", counts[o])); d.appendChild(b);
+  });
+  return d;
+}
+
+function render(){
+  res.innerHTML = "";
+  if (!rows.length){ res.innerHTML = '<div class="empty">Todavía no hay tiendas registradas.<br>Usa <b>Registrar tienda</b> para guardar la primera entrevista.</div>'; return; }
+  const N = rows.length;
+  const viajes = avg(rows.map(r => r.viajes));
+  const ambos = rows.filter(r => typeof r.viajes === "number" && typeof r.gasto === "number");
+  const gastoMes = ambos.length ? avg(ambos.map(r => r.viajes * r.gasto * 4.3)) : null;
+  const sinP = rows.filter(r => r.sinproducto && r.sinproducto !== "Nunca").length, sinPtot = rows.filter(r => r.sinproducto).length;
+  const cons = rows.filter(r => r.consultaria === "Seguro que sí").length, constot = rows.filter(r => r.consultaria).length;
+  const pil = rows.filter(r => r.piloto === "Sí").length;
+  const stats = el("div", "stats");
+  [[N, "tiendas registradas"], [fmt(viajes, 1), "viajes de compra por semana (promedio)"], [gastoMes === null ? "–" : "$" + fmt(gastoMes, 0), "gasto mensual estimado en transporte por tienda"], [pct(sinP, sinPtot) + "%", "volvió sin un producto al menos una vez el último mes"], [pct(cons, constot) + "%", "consultaría seguro la disponibilidad"], [pil, "aceptan la prueba de 2 a 3 semanas"]]
+    .forEach(([b, s]) => { const d = el("div", "stat"); d.append(el("b", "", b), el("span", "", s)); stats.appendChild(d); });
+  res.appendChild(stats);
+  res.appendChild(el("p", "hint", "Gasto mensual = viajes por semana × gasto por viaje × 4,3 semanas, promediado entre las tiendas que respondieron ambas preguntas."));
+  [["¿Cómo compran?","como"],["Veces que volvieron sin un producto (último mes)","sinproducto"],["Veces que se quedaron sin un producto clave","agotado"],["¿Consultarían la disponibilidad?","consultaria"],["¿Les interesa la entrega compartida?","entrega"],["¿Reciben factura o nota?","papeles"],["Formas de pago","pagos"]]
+    .forEach(([t, id]) => res.appendChild(distBlock(t, id)));
+  res.appendChild(el("h2", "", "Tiendas registradas"));
+  const list = el("div", "list");
+  rows.forEach(r => {
+    const row = el("div", "row"); const info = el("div");
+    info.appendChild(el("strong", "", (r.tienda || "Sin nombre") + (r.sector ? " · " + r.sector : "")));
+    info.appendChild(el("small", "", [r.tipo, r.piloto === "Sí" ? "acepta prueba" + (r.telefono ? " (" + r.telefono + ")" : "") : "", r.comentario ? "“" + r.comentario + "”" : ""].filter(Boolean).join(" · ")));
+    let fecha = ""; try { fecha = new Date(r.creado).toLocaleString("es-VE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}); } catch(e){}
+    info.appendChild(el("small", "", fecha));
+    const del = el("button", "del", "Borrar"); del.type = "button";
+    del.onclick = async () => {
+      if (del.dataset.confirm !== "1"){ del.dataset.confirm = "1"; del.textContent = "¿Seguro? Toca otra vez"; setTimeout(() => { del.dataset.confirm = ""; del.textContent = "Borrar"; }, 4000); return; }
+      del.disabled = true; del.textContent = "Borrando…";
+      try {
+        const x = await fetch(API + "?id=" + encodeURIComponent(r.id), { method: "DELETE", headers: { "x-clave": clave } });
+        if (!x.ok) throw 0;
+        rows = rows.filter(y => y.id !== r.id); render();
+      } catch(e){ del.disabled = false; del.textContent = "No se pudo borrar"; }
+    };
+    row.append(info, del); list.appendChild(row);
+  });
+  res.appendChild(list);
+}
+</script>
+</body>
+</html>

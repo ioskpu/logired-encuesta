@@ -1,0 +1,10 @@
+{
+  "name": "logired-encuesta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Formulario de validación con tiendas de Puerto Ayacucho. Guarda en Google Sheets.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
+}
